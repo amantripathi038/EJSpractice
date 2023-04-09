@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New EMI</title>
+    <%- include ('../partials/styles.html'); %>
+  </head>
+  <body>
+    <div class="container">
+      <%- include ('../partials/header.html'); %>
+      <div class="section">
+        <h1 style="color: blueviolet">
+          <center><u>Add New EMI</u></center>
+        </h1>
+        <div class="form-wrapper">
+          <form id="add-emi-form">
+            <div class="form-group">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeHolder="Enter Name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="emi-number"
+                name="emiNo"
+                placeHolder="Enter EMI Number"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="contact"
+                name="contact"
+                placeHolder="Enter Contact Number"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="numberOfEmis"
+                name="numberOfEmis"
+                placeHolder="Enter Number of EMI's"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="amount"
+                name="amount"
+                placeHolder="Enter Amount"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="date"
+                name="date"
+                placeHolder="Date (DD/MM/YYYY)"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <button type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <%- include ('../partials/footer.html'); %>
+    </div>
+    <script>
+      const form = document.getElementById("add-emi-form");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = document.getElementById("name").value;
+        const emiNo = document.getElementById("emi-number").value;
+        const date = document.getElementById("date").value;
+        const contact = document.getElementById("contact").value;
+        const numberOfEmis = document.getElementById("numberOfEmis").value;
+        const amount = document.getElementById("amount").value;
+
+        fetch("/addEMI", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            name: name,
+            emiNo: emiNo,
+            date: date,
+            contact: contact,
+            numberOfEmis: numberOfEmis,
+            amount: amount,
+          }).toString(),
+        })
+          .then((response) => {
+            if (response.status === 200) {
+              return response.json();
+            } else if (response.status === 404) {
+              throw new Error("EMI number already exists");
+            } else {
+              throw new Error("Server error");
+            }
+          })
+          .then((data) => {
+            alert("EMI added successfully");
+            window.location.href = window.location.origin;
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      });
+    </script>
+  </body>
+</html>

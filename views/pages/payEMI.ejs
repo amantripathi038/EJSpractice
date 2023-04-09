@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pay EMI</title>
+  </head>
+  <div class="container">
+  <%- include ('../partials/styles.html'); %>
+  <body>
+    <%- include ('../partials/header.html'); %>
+    <div class="section">
+      <h1 style="color: blueviolet">
+        <center><u>Pay EMI</u></center>
+      </h1>
+      <div class="form-wrapper">
+        <form id="emi-form">
+          <div class="form-group">
+            <input
+              type="text"
+              id="emi-number"
+              name="emiNo"
+              placeHolder="Enter EMI Number"
+              required
+            />
+            <label for="emi-number">EMI Number</label>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <div class="card-content" id="pay-card">
+        <h2 style="color: rgb(2, 81, 73)"><center>EMI Details</center></h2>
+        <hr />
+          <h4>Name: <span id="name"></span></h4>
+          <h4>EMI No: <span id="emiNo"></span></h4>
+          <h4>Contact: <span id="contact"></span></h4>
+          <h4>Date of Purchase: <span id="dop"></span></h4>
+          <h4>Amount: <span id="amount"></span></h4>
+          <h4>Due Date: <span id="dueDate"></span></h4>
+          <h4>Remaining EMIs: <span id="remaining"></span></h4>
+          <center><button type="submit" id="pay-button">Pay</button></center>
+        </div>
+      </div>
+    </div>
+    <%- include ('../partials/footer.html'); %>
+  </div>
+    <script>
+      const form = document.getElementById("emi-form");
+      const payButton = document.getElementById("pay-button");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const emiNo = document.getElementById("emi-number").value;
+        fetch("/getEMIDetails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ emiNo }).toString(),
+        })
+          .then((response) => {
+            if (response.status === 200) {
+              return response.json();
+            } else if (response.status === 404) {
+              throw new Error("EMI number does not exist");
+            } else {
+              throw new Error("Server error");
+            }
+          })
+          .then((data) => {
+            console.log(data);
+            document.getElementById("name").textContent = data.emi.name;
+            document.getElementById("emiNo").textContent = data.emi.emiNo;
+            document.getElementById("contact").textContent = data.emi.contact;
+            document.getElementById("dop").textContent =
+              data.emi.dateOfPurchase;
+            document.getElementById("amount").textContent = data.emi.amount;
+            document.getElementById("dueDate").textContent =
+              data.emi.nextEmiDate;
+            document.getElementById("remaining").textContent =
+              data.emi.remainingEmis;
+            document.querySelector(".card").style.display = "block";
+            document.getElementById("pay-button").style.display = "block";
+          })
+          .catch((error) => {
+            document.getElementById("name").textContent = "";
+            document.getElementById("emiNo").textContent =
+              "EMI Number Not Found";
+            document.getElementById("contact").textContent = "";
+            document.getElementById("dop").textContent = "";
+            document.getElementById("amount").textContent = "";
+            document.getElementById("dueDate").textContent = "";
+            document.getElementById("remaining").textContent = "";
+            document.querySelector(".card").style.display = "block";
+            document.getElementById("pay-button").style.display = "none";
+          });
+      });
+
+      payButton.addEventListener("click", (event) => {
+        const emiNo = document.getElementById("emiNo").textContent;
+        payButton.style.display = "none";
+        fetch("/payEMI", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ emiNo }).toString(),
+        })
+          .then((response) => {
+            if (response.status === 200) {
+              return response.json();
+            } else if (response.status === 404) {
+              throw new Error("EMI number does not exist");
+            } else {
+              throw new Error("Server error");
+            }
+          })
+          .then((data) => {
+            alert(data.message);
+          })
+          .catch((error) => {
+            alert("Something is not right");
+          });
+      });
+    </script>
+  </body>
+</html>

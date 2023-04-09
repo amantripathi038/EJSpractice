@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EMI Portal</title>
+    <%- include ('../partials/styles.html'); %>
+  </head>
+  <body>
+    <div class="container">
+      <%- include ('../partials/header.html'); %>
+      <div class="section">
+        <center>
+          <a href="/addEMI" class="index-button">Add New EMI</a>
+          <a href="/payEMI" class="index-button">Pay EMI</a>
+          <a href="/getAllEMIDetails" class="index-button"
+            >Get All EMI Details</a
+          >
+          <a href="/getEMIDetails" class="index-button">Get EMI Details</a>
+          <a href="/upcomingEMIs" class="index-button">Upcoming EMIs</a>
+        </center>
+      </div>
+      <%- include ('../partials/footer.html'); %>
+    </div>
+  </body>
+</html>
