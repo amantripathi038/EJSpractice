@@ -47,7 +47,10 @@ exports.payEMI = async function (req, res) {
 
         emi.remainingEmis = emi.remainingEmis - 1
         if (emi.remainingEmis <= 0) {
-            await emiSchema.deleteOne({ emiNo: emiNo })
+            // await emiSchema.deleteOne({ emiNo: emiNo })
+            emi.remainingEmis = 0
+            emi.nextEmiDate = ""
+            emi.save()
             return res.status(200).send({
                 message: "Successfully Paid & Customer EMIs completed"
             })
@@ -83,7 +86,6 @@ exports.getEMIDetails = async function (req, res) {
 
 exports.getAllEMIDetails = async function (req, res) {
     const emi = await emiSchema.find()
-    const count = emi.length
     /*if (emi) {
         res.status(200).send({
             message: `${count} records found`,
@@ -129,4 +131,14 @@ function nextDatesReverse(startDate, count) {
         result.push(currentDate.toISOString().slice(0, 10));
     }
     return result.reverse();
+}
+
+exports.completedEMIs = async function (req, res) {
+    try {
+        const emi = await emiSchema.find({ nextEmiDate: "" })
+        res.render('pages/completedEMI', { emi: emi })
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message })
+    }
 }

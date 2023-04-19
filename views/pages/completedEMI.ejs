@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Completed EMIs</title>
+  </head>
+    <%- include ('../partials/styles.html'); %>
+  <body>
+    <div class="container">
+    <%- include ('../partials/header.html'); %>
+    <div class="section">
+      <h1 style="color: blueviolet">
+        <center><u>Completed EMI Details</u></center>
+      </h1>
+        <% for(var i=0; i<emi.length; i++) { %>
+            <div class="card">
+              <div class="card-content">
+                <h2 style="color:rgb(2, 81, 73);"> <center><%= emi[i].name %> <%= emi[i].emiNo %></center> </h2>
+                <hr>
+                <h4>Contact: <%= emi[i].contact %></h4>
+                <h4>Date of Purchase: <%= emi[i].dateOfPurchase %></h4>
+                <h4>Remaining EMIs: <%= emi[i].remainingEmis %></h4>
+                <h4>EMI Amount: <%= emi[i].amount %></h4>
+              </div>
+            </div>
+        <% } %>
+    </div>
+      <%- include ('../partials/footer.html'); %>
+    </div>
+  </body>
+</html>
